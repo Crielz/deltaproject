@@ -8,8 +8,8 @@ functions:
     handler: ./insert-priceevent
     image:  nathancriel/insert-priceevent
     labels:
-      com.openfaas.scale.min: 2
-      com.openfaas.scale.max: 100
+      com.openfaas.scale.min: 6
+      com.openfaas.scale.max: 50
       com.openfaas.scale.factor: 20
     environment:
       write_timeout: 10s

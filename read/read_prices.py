@@ -147,3 +147,55 @@ baseCurrency = "ETH"
 all_prices_from_base_currency = get_all_recent_prices_from_base_currency(priceCollection, baseCurrency)
 for element in all_prices_from_base_currency:
     print(element) 
+
+
+"""
+# how data is inserted in mongoDB
+{
+"timestampInMs" : Date.now() ,
+"priceEvent": {
+    "baseCurrency": baseCurrencies[Math.floor(Math.random() * baseCurrencies.length)],
+    "quoteCurrency": quoteCurrencies[Math.floor(Math.random() * quoteCurrencies.length)],
+    "exchange": exchanges[Math.floor(Math.random() * exchanges.length)],
+    "price": Math.floor(Math.random()*1000),
+    "baseVolumeLast24h": "2095.19824100",
+    "quoteVolumeLast24h": "95422969.85662475"
+    }
+}
+
+# how data will be transformed using the aggregation pipeline
+"priceEvent": {
+    "baseCurrency": "BTC"
+    "quoteCurrency": "USDC",
+    "exchange": "binance",
+    "baseVolumeLast24h": "2095.19824100",
+    "quoteVolumeLast24h": "95422969.85662475"
+    "timestampCol": {
+        1615184524097: 48550,
+        1615184524128: 48660,
+        1615184524097: 48330,
+        1615184524149: 48485,
+        1615184524154: 48600
+        }
+    }
+    
+
+# final structure 
+{
+"priceEvent": {
+    "baseCurrency": "BTC"
+    "quoteCurrency": "USDC",
+    "exchange": "binance",
+    "baseVolumeLast24h": "2095.19824100",
+    "quoteVolumeLast24h": "95422969.85662475"
+    "minTimestampInMs": 1615184524097,
+    "maxTimestampInMs": 1615184524154,
+    "open": 48550,
+    "high": 48660,
+    "low": 48330,
+    "close": 48600   
+    }
+
+}
+    
+"""

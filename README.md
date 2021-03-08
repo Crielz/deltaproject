@@ -65,14 +65,11 @@ Please make sure your PoC runs in a Docker environment (foresee a `docker-compo
 Feel free to contact us if something would not be clear.
 
 ## Backlog
-
-![Delta%20Data%20Engineering%20Test%209bac4216379f45f9bc402d31c547a142/Schermafbeelding_2021-03-08_om_12.49.43.png](Delta%20Data%20Engineering%20Test%209bac4216379f45f9bc402d31c547a142/Schermafbeelding_2021-03-08_om_12.49.43.png)
+![](./diagram/backlog.png)
 
 ## Architecture
-
 ![](./diagram/delta_architecture_POC.png)
 
-![Delta%20Data%20Engineering%20Test%209bac4216379f45f9bc402d31c547a142/delta_architecture_POC.png](Delta%20Data%20Engineering%20Test%209bac4216379f45f9bc402d31c547a142/delta_architecture_POC.png)
 
 # Introduction
 
@@ -89,8 +86,6 @@ Kafka stores key-value messages that come from producers (publishers). The data 
 ![Delta%20Data%20Engineering%20Test%209bac4216379f45f9bc402d31c547a142/Untitled.png](Delta%20Data%20Engineering%20Test%209bac4216379f45f9bc402d31c547a142/Untitled.png)
 
 The key abstraction in Kafka is the topic. Producers publish their records to a topic, and consumers subscribe to one or more topics. A Kafka topic is just a sharded write-ahead log. Producers append records to these logs and consumers subscribe to changes. Each record is a key/value pair. 
-
-[why kafka](https://www.notion.so/why-kafka-eb58f11a9a9b4642a3c28bd6dd8d5df0)
 
 ### Kafka Connect
 
@@ -110,8 +105,6 @@ The data within Zookeeper is divided across multiple collections of nodes and th
 
 OpenFaas is a platform that allows us to run short-running tasks with an HTTP endpoint (Webhook). It creates a Function as a Service like Amazon Lambda or Azure Functions. It is a practical and server-less platform that supports various programming languages like java, c#, Node.js, etc. The applications that are being deployed are called functions, there are based on Docker images. The OpenFaas environment is deployed in our Kubernetes cluster. 
 
-[// to do debate on openfaas and alternatives](https://www.notion.so/to-do-debate-on-openfaas-and-alternatives-e90ac1a3784b4fdb9a1bff2ac6037b8b)
-
 ### Kubernetes
 
 Kubernetes is a powerful container management tool that automates the deployment and management of containers
@@ -128,11 +121,7 @@ Kubernetes clusters can run on EC2 and integrate with services such as Amazon El
 
 MongoDB  is an open-source database that uses a doc-oriented database written in C++ and it is a non-structured query language and in today's it is the most powerful database. in MongoDB, you can create multiple databases and each database can have multiple collections. 
 
-[why mongodb](https://www.notion.so/why-mongodb-f3dd7a9b78ca441faa51d44aea0e1dca)
-
 ### Handling Hot Data
-
-[hot data](https://www.notion.so/hot-data-bb0d981053634e1394196d446e1c19e3)
 
 Real-time data streaming and handling Hot Data. To tackle this I have 2 propositions:
 
@@ -200,8 +189,7 @@ For this POC I limited myself in developing an MVP. This includes OpenFaaS serve
 
 ![](./diagram/asis_mvp_architecture.png)
 
-![Delta%20Data%20Engineering%20Test%209bac4216379f45f9bc402d31c547a142/asis_mvp_architecture.png](Delta%20Data%20Engineering%20Test%209bac4216379f45f9bc402d31c547a142/asis_mvp_architecture.png)
-
+![Delta%20Data%20Engineering%20Test%209bac4216379f45f9bc402d31c547a142/asis_mvp_architecture.png]
 ## Instructions
 
 I prepared a short video to show the installation process of my POC. 

@@ -83,7 +83,6 @@ Kafka stores key-value messages that come from producers (publishers). The data 
 
 ![](./diagram/apache_kafka_producer_consumer.png)
 
-![Delta%20Data%20Engineering%20Test%209bac4216379f45f9bc402d31c547a142/Untitled.png](Delta%20Data%20Engineering%20Test%209bac4216379f45f9bc402d31c547a142/Untitled.png)
 
 The key abstraction in Kafka is the topic. Producers publish their records to a topic, and consumers subscribe to one or more topics. A Kafka topic is just a sharded write-ahead log. Producers append records to these logs and consumers subscribe to changes. Each record is a key/value pair. 
 

@@ -64,31 +64,39 @@ Please make sure your PoC runs in a Docker environment (foresee a `docker-compo
 
 Feel free to contact us if something would not be clear.
 
-## 
+## Backlog
 
-[Requirements](https://www.notion.so/1e93bb516a5e48caaee3484c3aa65406)
+![Delta%20Data%20Engineering%20Test%209bac4216379f45f9bc402d31c547a142/Schermafbeelding_2021-03-08_om_12.49.43.png](Delta%20Data%20Engineering%20Test%209bac4216379f45f9bc402d31c547a142/Schermafbeelding_2021-03-08_om_12.49.43.png)
 
 ## Architecture
 
-![Delta%20Data%20Engineering%20Test%20b3c8244c753941af8908be6c8059663a/delta_architecture_POC.png](Delta%20Data%20Engineering%20Test%20b3c8244c753941af8908be6c8059663a/delta_architecture_POC.png)
+![](./diagram/delta_architecture_POC.png)
+
+![Delta%20Data%20Engineering%20Test%209bac4216379f45f9bc402d31c547a142/delta_architecture_POC.png](Delta%20Data%20Engineering%20Test%209bac4216379f45f9bc402d31c547a142/delta_architecture_POC.png)
+
+# Introduction
+
+In this READ.me file I give a small introduction on the different services I use in my solution. I suggest going over my approach and train of thought during the second interview.  To get your hands dirty please refer to the instructions segment where I will guide you through the installation of my POC. I prepared a short video to demonstrate how I set it up on my local machine.
 
 ### Apache Kafka
 
 Apache Kafka is an open-source distributed streaming platform. The platform is run as a cluster on one or more servers, called brokers. It functions as a publish/subscribe messaging queue. It stores the streams of data records in a fault-tolerant durable way on topics. It is mainly used to build a real-time streaming data pipeline.
 
-Kafka stores key-value messages that come from producers (publishers). The data can be partitioned into different “partitions” with different “topics”. Consumers (subscribers) are able to read messages from the partitions. The partitions are replicated across multiple brokers, this allows the system to be fault tolerant.
+Kafka stores key-value messages that come from producers (publishers). The data can be partitioned into different “partitions” with different “topics”. Consumers (subscribers) are able to read messages from the partitions. The partitions are replicated across multiple brokers, this allows the system to be fault-tolerant.
 
-![Delta%20Data%20Engineering%20Test%20b3c8244c753941af8908be6c8059663a/Untitled.png](Delta%20Data%20Engineering%20Test%20b3c8244c753941af8908be6c8059663a/Untitled.png)
+![](./diagram/apache_kafka_producer_consumer.png)
+
+![Delta%20Data%20Engineering%20Test%209bac4216379f45f9bc402d31c547a142/Untitled.png](Delta%20Data%20Engineering%20Test%209bac4216379f45f9bc402d31c547a142/Untitled.png)
 
 The key abstraction in Kafka is the topic. Producers publish their records to a topic, and consumers subscribe to one or more topics. A Kafka topic is just a sharded write-ahead log. Producers append records to these logs and consumers subscribe to changes. Each record is a key/value pair. 
 
-Why Kafka? 
+[why kafka](https://www.notion.so/why-kafka-eb58f11a9a9b4642a3c28bd6dd8d5df0)
 
 ### Kafka Connect
 
 Kafka Connect is an open-source framework that allows the connection of Kafka with external systems such as databases, key-value stores, search indexes, and file systems. Using Kafka Connect you can use existing connector implementations for common data sources and sinks to move data into and out of Kafka.
 
-In this project we have a sink connector that allows us to deliver data from Kafka topics into a MongoDb database.
+In this project, we have a sink connector that allows us to deliver data from Kafka topics into a MongoDB database.
 
 ### Apache Zookeeper
 
@@ -96,13 +104,13 @@ ZooKeeper is a centralized service for maintaining configuration information, na
 
 ZooKeeper keeps track of the status of the Kafka cluster and about the Kafka topics, partitions, etc.
 
-The data within Zookeeper is divided across multiple collection of nodes and this is how it achieves its high availability and consistency. In case a node fails, Zookeeper can perform instant failover migration; e.g. if a master node fails, a new one is selected in real-time by polling within an ensemble. A client connecting to the server can query a different node if the first one fails to respond.
+The data within Zookeeper is divided across multiple collections of nodes and this is how it achieves its high availability and consistency. In case a node fails, Zookeeper can perform instant failover migration; e.g. if a master node fails, a new one is selected in real-time by polling within an ensemble. A client connecting to the server can query a different node if the first one fails to respond.
 
 ### OpenFaaS
 
-OpenFaas is a platform that allows us to run short-running tasks with an http endpoint (webhook). It creates a Function as a Service like Amazon Lambda or Azure Functions. It is a practical and serverless platform that supports various programming languages like java, c#, node.js etc. The applications that are being deployed are called functions, there are based on Docker images. The OpenFaas environment is deployed in our Kubernetes cluster. 
+OpenFaas is a platform that allows us to run short-running tasks with an HTTP endpoint (Webhook). It creates a Function as a Service like Amazon Lambda or Azure Functions. It is a practical and server-less platform that supports various programming languages like java, c#, Node.js, etc. The applications that are being deployed are called functions, there are based on Docker images. The OpenFaas environment is deployed in our Kubernetes cluster. 
 
-// to do debate on openfaas and alternatives
+[// to do debate on openfaas and alternatives](https://www.notion.so/to-do-debate-on-openfaas-and-alternatives-e90ac1a3784b4fdb9a1bff2ac6037b8b)
 
 ### Kubernetes
 
@@ -118,37 +126,69 @@ Kubernetes clusters can run on EC2 and integrate with services such as Amazon El
 
 ### MongoDB
 
+MongoDB  is an open-source database that uses a doc-oriented database written in C++ and it is a non-structured query language and in today's it is the most powerful database. in MongoDB, you can create multiple databases and each database can have multiple collections. 
+
+[why mongodb](https://www.notion.so/why-mongodb-f3dd7a9b78ca441faa51d44aea0e1dca)
+
 ### Handling Hot Data
 
-Real time data streaming and handling Hot Data
+[hot data](https://www.notion.so/hot-data-bb0d981053634e1394196d446e1c19e3)
 
-//todo
+Real-time data streaming and handling Hot Data. To tackle this I have 2 propositions:
+
+1. MongoDB Aggregation Pipeline & Sharding
+2. Apache KSQL
+
+To optimize read/write capabilities I propose structuring the priceEvent in the following code snippet. 
 
 ```python
 
+# how data is inserted in mongoDB
 {
-    timestamp_id : uint64,
-    priceEvent: {
-        baseCurrency: string;
-        quoteCurrency: string;
-        exchange: string;
-        price: float64;
-        baseVolumeLast24h: float64;
-        quoteVolumeLast24h: float64;
+"timestampInMs" : Date.now() ,
+"priceEvent": {
+    "baseCurrency": baseCurrencies[Math.floor(Math.random() * baseCurrencies.length)],
+    "quoteCurrency": quoteCurrencies[Math.floor(Math.random() * quoteCurrencies.length)],
+    "exchange": exchanges[Math.floor(Math.random() * exchanges.length)],
+    "price": Math.floor(Math.random()*1000),
+    "baseVolumeLast24h": "2095.19824100",
+    "quoteVolumeLast24h": "95422969.85662475"
     }
 }
 
-#example
-{
-    "timestampInMs" : 1614518938577 ,
-    "priceEvent": {
-        "baseCurrency": "BTC",
-        "quoteCurrency": "USDC",
-        "exchange": "Binance",
-        "price": "46450",
-        "baseVolumeLast24h": "2095.19824100",
-        "quoteVolumeLast24h": "95422969.85662475"
+# how data will be transformed using the aggregation pipeline
+"priceEvent": {
+    "baseCurrency": "BTC"
+    "quoteCurrency": "USDC",
+    "exchange": "binance",
+    "baseVolumeLast24h": "2095.19824100",
+    "quoteVolumeLast24h": "95422969.85662475"
+    "timestampCol": {
+        1615184524097: 48550,
+        1615184524128: 48660,
+        1615184524097: 48330,
+        1615184524149: 48485,
+        1615184524154: 48600
+        }
     }
+    
+
+# final structure 
+{
+"priceEvent": {
+    "baseCurrency": "BTC"
+    "quoteCurrency": "USDC",
+    "exchange": "binance",
+    "baseVolumeLast24h": "2095.19824100",
+    "quoteVolumeLast24h": "95422969.85662475"
+    "minTimestampInMs": 1615184524097,
+    "maxTimestampInMs": 1615184524154,
+    "open": 48550,
+    "high": 48660,
+    "low": 48330,
+    "close": 48600   
+    }
+
 }
 ```
 
@@ -158,7 +198,9 @@ For this POC I limited myself in developing an MVP. This includes OpenFaaS serve
 
 ## MVP Architecture
 
-![Delta%20Data%20Engineering%20Test%20b3c8244c753941af8908be6c8059663a/asis_mvp_architecture.png](Delta%20Data%20Engineering%20Test%20b3c8244c753941af8908be6c8059663a/asis_mvp_architecture.png)
+![](./diagram/asis_mvp_architecture.png)
+
+![Delta%20Data%20Engineering%20Test%209bac4216379f45f9bc402d31c547a142/asis_mvp_architecture.png](Delta%20Data%20Engineering%20Test%209bac4216379f45f9bc402d31c547a142/asis_mvp_architecture.png)
 
 ## Instructions
 
@@ -170,12 +212,11 @@ I prepared a short video to show the installation process of my POC.
 
 Before we start, you’ll need access to the following:
 
-- Kubernetes - install with your preferred local tooling such as KinD, minikube, or k3d. Or use a cloud service like Amazon EKS, GKE or DigitalOcean Kubernetes. A single VM running k3s is also fine.
-- To start your minikube
+- Kubernetes - install with your preferred local tooling such as KinD, Minikube, or k3d. Or use a cloud service like Amazon EKS, GKE, or DigitalOcean Kubernetes. A single VM running k3s is also fine.
+- To start your Minikube
 
 ```bash
-minikube start
-//or assign more memory run $ minikube start --memory=8192 --cpus=4
+minikube start --memory=4096 --cpus=4
 ```
 
 - A running Docker Deamon. You can check this by running $docker ps.
@@ -194,11 +235,11 @@ Download and install Openfaas.
 curl -sL https://cli.openfaas.com | sudo sh
 ```
 
-Make sure you are in directory "mongodb-function" and execute bootstrap script.
+Make sure you are in the directory "deltaproject" and execute the bootstrap script.
 
 ```bash
+cd deltaproject
 source bootstrap.sh
-
 ```
 
 Replace "nathancriel/" prefix from Docker Hub in stack.yml with your own account
@@ -213,7 +254,7 @@ Check if Openfaas and mongoDB are running
 kubectl get pod -n openfaas -o wide
 ```
 
-When all pods are in a running state, execute following command:
+When all pods are in a running state, execute the following command:
 
 ```bash
 source connection_setup.sh
@@ -225,26 +266,26 @@ If you see an error that refers to a missing node10-express template, try pullin
 faas template pull https://github.com/openfaas-incubator/node10-express-template
 ```
 
-Test if the OpenFaaS functions works with a simple curl command. 
+Test if the OpenFaaS functions work with a simple curl command. 
 
 ```bash
 curl http://$OPENFAAS_URL/function/insert-priceevent
 ```
 
-Download a load testing tool. I use go, this requires an i[nstallation of Go](https://golang.org/dl/).
+Download a load testing tool. I use GO, this requires an [installation of Go.](https://golang.org/dl/)
 
 ```bash
 $ go get -u github.com/rakyll/hey
 
 $ ~/go/bin/hey -m POST  \
   -H "Content-Type: application/json" \
-  -n 10000 -c 10 http://$OPENFAAS_URL/function/insert-priceevent
+  -n 1000 -c 10 http://$OPENFAAS_URL/function/insert-priceevent
 ```
 
 To view documents in MongoDB, download a MongoDB client and get the connection URI by executing;
 
 ```bash
-echo $MONGODB_CONNECTION_URI
+mongodb://root:deltaproject01@localhost:27017
 ```
 
 ## Read Data Demonstration

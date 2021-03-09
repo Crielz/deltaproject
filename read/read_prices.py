@@ -150,7 +150,7 @@ for element in all_prices_from_base_currency:
 
 
 """
-# how data is inserted in mongoDB
+# how data is inserted in mongoDB ASIS
 {
 "timestampInMs" : Date.now() ,
 "priceEvent": {
@@ -163,13 +163,24 @@ for element in all_prices_from_base_currency:
     }
 }
 
+struct PriceEvent {
+    baseCurrency: "BTC";
+    quoteCurrency: "USDC";
+    exchange: "binance";
+    price: 48550;
+    baseVolumeLast24h: 2095.19824100;
+    quoteVolumeLast24h: 95422969.85662475;
+    timestampInMs: 1615184524097;
+}
+
+
 # how data will be transformed using the aggregation pipeline
 "priceEvent": {
     "baseCurrency": "BTC"
     "quoteCurrency": "USDC",
     "exchange": "binance",
-    "baseVolumeLast24h": "2095.19824100",
-    "quoteVolumeLast24h": "95422969.85662475"
+    "baseVolumeLast24h": 2095.19824100,
+    "quoteVolumeLast24h": 95422969.85662475
     "timestampCol": {
         1615184524097: 48550,
         1615184524128: 48660,
@@ -193,7 +204,7 @@ for element in all_prices_from_base_currency:
     "open": 48550,
     "high": 48660,
     "low": 48330,
-    "close": 48600   
+    "closed": 48600   
     }
 
 }
